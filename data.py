@@ -5,6 +5,7 @@ import torch
 from torch.utils.data import TensorDataset
 from torchvision.datasets import ImageFolder
 import torchvision.transforms as transforms
+import torchvision.datasets
 from sklearn.model_selection import train_test_split
 
 
@@ -143,15 +144,26 @@ def ffhq256(data_root):
 
 
 def cifar10(data_root, one_hot=True):
-    tr_data = [unpickle_cifar10(os.path.join(data_root, 'cifar-10-batches-py/', 'data_batch_%d' % i)) for i in range(1, 6)]
-    trX = np.vstack(data['data'] for data in tr_data)
-    trY = np.asarray(flatten([data['labels'] for data in tr_data]))
-    te_data = unpickle_cifar10(os.path.join(data_root, 'cifar-10-batches-py/', 'test_batch'))
-    teX = np.asarray(te_data['data'])
-    teY = np.asarray(te_data['labels'])
-    trX = trX.reshape(-1, 3, 32, 32).transpose(0, 2, 3, 1)
-    teX = teX.reshape(-1, 3, 32, 32).transpose(0, 2, 3, 1)
-    trX, vaX, trY, vaY = train_test_split(trX, trY, test_size=5000, random_state=11172018)
+    # tr_data = [unpickle_cifar10(os.path.join(data_root, 'cifar-10-batches-py/', 'data_batch_%d' % i)) for i in range(1, 6)]
+    # trX = np.vstack(data['data'] for data in tr_data)
+    # trY = np.asarray(flatten([data['labels'] for data in tr_data]))
+    dataset = torchvision.datasets.CIFAR10(root=data_root, train=True, download=True)
+    trX = dataset.data
+    trY = np.asarray(dataset.targets)
+
+    test_dataset = torchvision.datasets.CIFAR10(
+        root=data_root, train=False, download=True
+    )
+    teX = dataset.data
+    teY = np.asarray(dataset.targets)
+    # te_data = unpickle_cifar10(os.path.join(data_root, 'cifar-10-batches-py/', 'test_batch'))
+    # teX = np.asarray(te_data['data'])
+    # teY = np.asarray(te_data['labels'])
+    # trX = trX.reshape(-1, 3, 32, 32).transpose(0, 2, 3, 1)
+    # teX = teX.reshape(-1, 3, 32, 32).transpose(0, 2, 3, 1)
+    trX, vaX, trY, vaY = train_test_split(
+        trX, trY, test_size=5000, random_state=11172018
+    )
     if one_hot:
         trY = np.eye(10, dtype=np.float32)[trY]
         vaY = np.eye(10, dtype=np.float32)[vaY]

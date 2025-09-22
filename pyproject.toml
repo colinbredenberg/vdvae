@@ -1,0 +1,30 @@
+[project]
+name = "vdvae"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "imageio>=2.37.0",
+    "mpi4py>=4.1.0",
+    "scikit-learn>=1.7.2",
+    "torch>=2.8.0",
+    "torchvision>=0.23.0",
+]
+
+[project.optional-dependencies]
+apex = ["apex"]
+
+[tool.uv]
+no-build-isolation-package = ["apex"]
+# Need to set these flags when installing apex to build the cuda extensions.
+# Adapted from https://github.com/astral-sh/uv/issues/9981#issuecomment-2551968338
+# config-settings = { --global-option = "--cpp_ext --cuda_ext" }
+
+[[tool.uv.dependency-metadata]]
+name = "apex"
+version = "25.08"
+requires-sdist = ["torch"]
+
+[tool.uv.sources]
+apex = { git = "https://github.com/NVIDIA/apex" }
