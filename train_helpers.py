@@ -90,14 +90,20 @@ def setup_mpi(H):
     )
     H.port = MASTER_PORT = int(
         os.environ.setdefault(
-            "MASTER_PORT", str(10_000 + int(os.environ["SLURM_JOB_ID"]) % 10_000)
+            "MASTER_PORT",
+            str(10_000 + int(os.environ["SLURM_JOB_ID"]) % 10_000)
+            if "SLURM_JOB_ID" in os.environ
+            else "12345",
         )
     )
-    _first_node = subprocess.check_output(
-        f"scontrol show hostnames {os.environ['SLURM_JOB_NODELIST']}",
-        text=True,
-        shell=True,
-    ).split()[0]
+    if "SLURM_JOB_NODELIST" in os.environ:
+        _first_node = subprocess.check_output(
+            f"scontrol show hostnames {os.environ['SLURM_JOB_NODELIST']}",
+            text=True,
+            shell=True,
+        ).split()[0]
+    else:
+        _first_node = "127.0.0.1"
     MASTER_ADDR = os.environ.setdefault("MASTER_ADDR", _first_node)
     # Get the hostname of the first node, for example: "cn-l[084-085]" --> cn-l084
     # MASTER_ADDR = os.environ.setdefault("MASTER_ADDR", _first_node)
