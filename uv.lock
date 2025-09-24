@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 
 [manifest]
@@ -7,11 +7,15 @@ requires-python = ">=3.13"
 [[manifest.dependency-metadata]]
 name = "apex"
 version = "25.8"
+requires-dist = ["torch"]
 
 [[package]]
 name = "apex"
 version = "25.8"
 source = { git = "https://github.com/NVIDIA/apex#214c6b33270a6054933749845c32224fb825463d" }
+dependencies = [
+    { name = "torch" },
+]
 
 [[package]]
 name = "filelock"
@@ -562,6 +566,7 @@ name = "vdvae"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "apex" },
     { name = "imageio" },
     { name = "mpi4py" },
     { name = "scikit-learn" },
@@ -569,18 +574,12 @@ dependencies = [
     { name = "torchvision" },
 ]
 
-[package.optional-dependencies]
-apex = [
-    { name = "apex" },
-]
-
 [package.metadata]
 requires-dist = [
-    { name = "apex", marker = "extra == 'apex'", git = "https://github.com/NVIDIA/apex" },
+    { name = "apex", git = "https://github.com/NVIDIA/apex" },
     { name = "imageio", specifier = ">=2.37.0" },
     { name = "mpi4py", specifier = ">=4.1.0" },
     { name = "scikit-learn", specifier = ">=1.7.2" },
     { name = "torch", specifier = ">=2.8.0" },
     { name = "torchvision", specifier = ">=0.23.0" },
 ]
-provides-extras = ["apex"]

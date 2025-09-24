@@ -10,21 +10,21 @@ dependencies = [
     "scikit-learn>=1.7.2",
     "torch>=2.8.0",
     "torchvision>=0.23.0",
+    "apex",
 ]
 
-[project.optional-dependencies]
-apex = ["apex"]
-
-[tool.uv]
-no-build-isolation-package = ["apex"]
-# Need to set these flags when installing apex to build the cuda extensions.
-# Adapted from https://github.com/astral-sh/uv/issues/9981#issuecomment-2551968338
-# config-settings = { --global-option = "--cpp_ext --cuda_ext" }
-
+# Based on https://docs.astral.sh/uv/concepts/projects/config/#augmenting-build-dependencies
+# Make sure you have a recent version of UV installed. Use `uv self update` to update UV if needed.
 [[tool.uv.dependency-metadata]]
 name = "apex"
 version = "25.08"
-requires-sdist = ["torch"]
+requires-dist = ["torch"]
+
+[tool.uv.extra-build-dependencies]
+apex = [{ requirement = "torch", match-runtime = true, version = "25.08" }]
+
+[tool.uv.extra-build-variables]
+apex = { --global-option = "--cpp_ext --cuda_ext" }
 
 [tool.uv.sources]
 apex = { git = "https://github.com/NVIDIA/apex" }
