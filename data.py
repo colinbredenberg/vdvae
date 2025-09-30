@@ -92,6 +92,45 @@ def set_up_data(H):
     return H, train_data, valid_data, preprocess_func
 
 
+def set_up_imagenet64(H, valid):
+    shift_loss = -127.5 / 255
+    scale_loss = 1. / (127.5 / 255)
+
+    H.image_size = 64
+    H.image_channels = 3
+    shift = (-115.92961967) / 255
+    scale = 1. / (69.37404 / 255)
+
+    shift = torch.tensor([shift]).cuda().view(1, 1, 1, 1)
+    scale = torch.tensor([scale]).cuda().view(1, 1, 1, 1)
+    shift_loss = torch.tensor([shift_loss]).cuda().view(1, 1, 1, 1)
+    scale_loss = torch.tensor([scale_loss]).cuda().view(1, 1, 1, 1)
+
+    valid_data = TensorDataset(valid)
+    untranspose = False
+
+    def preprocess_func(x):
+        nonlocal shift
+        nonlocal scale
+        nonlocal shift_loss
+        nonlocal scale_loss
+        do_low_bit = False
+        nonlocal untranspose
+        'takes in a data example and returns the preprocessed input'
+        'as well as the input processed for the loss'
+        if untranspose:
+            x[0] = x[0].permute(0, 2, 3, 1)
+        inp = x[0].cuda(non_blocking=True).float()
+        out = inp.clone()
+        inp.add_(shift).mul_(scale)
+        if do_low_bit:
+            # 5 bits of precision
+            out.mul_(1. / 8.).floor_().mul_(8.)
+        out.add_(shift_loss).mul_(scale_loss)
+        return inp, out
+
+    return H, valid_data, preprocess_func
+
 def mkdir_p(path):
     os.makedirs(path, exist_ok=True)
 
