@@ -250,13 +250,3 @@ class VAE(HModule):
     def forward_samples_set_latents(self, n_batch, latents, t=None):
         px_z = self.decoder.forward_manual_latents(n_batch, latents, t=t)
         return self.decoder.out_net.sample(px_z)
-
-def spatial_covariance(xs):
-    spatial_cov = {}
-    for key in xs.keys():
-        rep_reshaped = xs[key].permute([2,3,0,1])
-        rep_mean_sub = rep_reshaped - torch.mean(rep_reshaped, axis = (0,1,2), keepdims = True)
-        rep_cov = torch.matmul(rep_mean_sub.permute(0,1,3,2), rep_mean_sub) / rep_mean_sub.shape[3]
-        rep_cov = torch.mean(rep_cov, axis = (0,1))
-        spatial_cov[key] = rep_cov
-    return spatial_cov
