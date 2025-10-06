@@ -4,15 +4,15 @@ import argparse
 import os
 import json
 import subprocess
-from hps import Hyperparams, parse_args_and_update_hparams, add_vae_arguments
-from utils import logger, maybe_download
-from data import mkdir_p
+from pretrain.hps import Hyperparams, parse_args_and_update_hparams, add_vae_arguments
+from pretrain.utils import logger, maybe_download
+from pretrain.data import mkdir_p
 from contextlib import contextmanager
 import torch.distributed as dist
 
 # from apex.optimizers import FusedAdam as AdamW
 from torch.optim import AdamW
-from vae import VAE
+from pretrain.vae import VAE
 from torch.nn.parallel.distributed import DistributedDataParallel
 
 

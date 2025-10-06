@@ -5,3 +5,4 @@ ffhq-256.npy
 imagenet64*
 __pycache__/**
 apex/**
+*/__pycache__/**
