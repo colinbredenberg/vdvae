@@ -5,7 +5,7 @@ This codebase is adapted from https://github.com/openai/vdvae, and uses pretrain
 
 # Setup
 Several additional packages are required to run this code, which we manage with `uv` (available here: https://docs.astral.sh/uv/getting-started/installation/)
-Running `uv sync`, followed by `uv sync --all-extras` will create a virtual environment that includes all required dependencies.
+Running `uv sync`, followed by `uv sync --all-extras` will create a virtual environment `vdvae` that includes all required dependencies.
 
 Also, if you want to run the FFHQ-256 pretrained model, you will have to download the data:
 ```

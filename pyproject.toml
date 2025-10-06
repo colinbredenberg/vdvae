@@ -14,6 +14,9 @@ dependencies = [
     "apex",
     "matplotlib",
     "pyrtools",
+    "datasets",
+    "pip",
+    "ipykernel",
 ]
 
 # Based on https://docs.astral.sh/uv/concepts/projects/config/#augmenting-build-dependencies
